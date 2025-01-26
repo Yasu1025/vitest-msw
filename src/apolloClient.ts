@@ -1,17 +1,17 @@
 import {
   ApolloClient,
-  ApolloLink,
-  HttpLink,
   InMemoryCache,
+  HttpLink,
+  ApolloLink,
 } from "@apollo/client";
+
 import { onError } from "@apollo/client/link/error";
 
-// FOR ERROR LINK
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
     graphQLErrors.forEach(({ message, locations, path }) => {
       console.error(
-        `[GraphQL Error] Message: ${message}, Location: ${locations}, Path: ${path}`
+        `[GraphQL error]: Message: ${message}, Location:${locations} , Path:${path}`
       );
     });
   }
@@ -20,8 +20,8 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
   }
 });
 
-// FOR  CLIENT LINK
 const GITHUB_GRAPHQL_API = "https://api.github.com/graphql";
+
 const httpLink = new HttpLink({
   uri: GITHUB_GRAPHQL_API,
   headers: {
@@ -30,6 +30,7 @@ const httpLink = new HttpLink({
 });
 
 const link = ApolloLink.from([errorLink, httpLink]);
+
 const client = new ApolloClient({
   link,
   cache: new InMemoryCache(),
